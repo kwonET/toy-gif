@@ -8,28 +8,22 @@ import { dummyData } from "../util/dummy";
 import { useRouter } from "next/router";
 import { CtgrList } from "../util/dummy";
 
-const Home = ({ pageProps }) => {
-  const {push}=useRouter();
-  
-  push(`ctgr=home`);
-
-  console.log("나오나?", pageProps);
-
-  // const [text, setText] = useState<string>("자바스크립트");
-
+const Home = (pageProps) => {
+  const { push, query } = useRouter();
+  const { id } = pageProps;
   const [ctgrValue, setCtgrValue] = useState(null);
+  const [start, setStart] = useState(null);
 
   useEffect(() => {
-    let tempCtgr;
-    const temp = async () => {
-      const target = pageProps;
-      let resultContainer = await dummyData.filter(({ ctgrs }) => {
-        //dummyData중에서도 { ctgrs }를 가져온다 (자료형 : PicType[])
-        return ctgrs.includes(target);
-      });
-    };
-    temp();
-  },[pageProps]);
+    const start = false;
+    const target = id;
+    let resultContainer = dummyData.filter(({ ctgrs }) => {
+      //dummyData중에서도 { ctgrs }를 가져온다 (자료형 : PicType[])
+      return ctgrs.includes(target);
+    });
+    setStart(true);
+    setCtgrValue(resultContainer);
+  }, [id]);
 
   const onClickSaveTo = () => {
     // 저장기능추가
@@ -39,8 +33,9 @@ const Home = ({ pageProps }) => {
       <CenterWrapper>
         {/* <LineItm></LineItm> */}
         <ImgWrapper>
-          <img src={`${dummyData[1].imgUrl}`} />
+          {ctgrValue &&(<img src={`${ctgrValue[0].imgUrl}`} />)}
         </ImgWrapper>
+
         <LineItm></LineItm>
         <BtnWrapper onClick={() => onClickSaveTo}>저장하기</BtnWrapper>
       </CenterWrapper>

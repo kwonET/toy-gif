@@ -4,11 +4,16 @@ import styled from "styled-components";
 
 export const CtgrItm = ({ transCtgrVal, ctgrName }) => {
   const [ctgrChoice, setCtgrChoice] = useState(null);
-  const {push}=useRouter();
+  const { push } = useRouter();
 
   const onClickSelect = (ctgrName) => {
     setCtgrChoice(ctgrName);
-    push(`ctgr=${ctgrName}`);
+    push({
+      query: {
+        ctgr: ctgrName,
+      },
+      pathname: `/`,
+    });
   };
 
   useEffect(() => {
