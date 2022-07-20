@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { CtgrItm } from "./items/CtgrItem";
 import { LineItm } from "./items/LineItem";
-
+import { useState } from "react";
 export const Header = ({ cdata }) => {
+  const [ctgrValue, setCtgrValue]=useState();
+
+  // console.log(ctgrValue);
   return (
     <HeaderWrapper>
-      
       <CenterWrapper>
         <TitleWrapper>
           <div className="text">
@@ -15,7 +17,7 @@ export const Header = ({ cdata }) => {
         <LineItm></LineItm>
         <CtgrListWrapper>
           {cdata.map((item) => {
-            return <CtgrItm key={item.key} ctgrName={item} />;
+            return <CtgrItm transCtgrVal={setCtgrValue} key={item.key} ctgrName={item} />;
           })}
         </CtgrListWrapper>
         
@@ -23,6 +25,7 @@ export const Header = ({ cdata }) => {
     </HeaderWrapper>
   );
 };
+
 const HeaderWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -62,6 +65,7 @@ const CenterWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  width: 1200px;
+  width:1394px;
   height: 200px;
+  overflow: hidden;
 `;

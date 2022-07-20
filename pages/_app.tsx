@@ -3,10 +3,10 @@
 import { AppProps } from "next/app";
 import { useState } from "react";
 import { Header } from "../components/Header";
-
+import { CtgrList } from "../util/dummy";
 function App({ Component, pageProps }: AppProps) {
   type CtgrType = string;
-  const cdata: CtgrType[] = ["유머", "메롱"];
+  const cdata: CtgrType[] = CtgrList;
   return (
     <>
       <Header cdata={cdata}></Header>

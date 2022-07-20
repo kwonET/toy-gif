@@ -1,20 +1,39 @@
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 
-export const CtgrItm = ({ ctgrName }) => {
+export const CtgrItm = ({ transCtgrVal, ctgrName }) => {
+  const [ctgrChoice, setCtgrChoice] = useState(null);
+  const {push}=useRouter();
+
+  const onClickSelect = (ctgrName) => {
+    setCtgrChoice(ctgrName);
+    push(`ctgr=${ctgrName}`);
+  };
+
+  useEffect(() => {
+    transCtgrVal(ctgrChoice);
+    // console.log(ctgrChoice);
+  }, [ctgrChoice]);
+
   return (
-      <CtgrWrapper>
-        <CtgrTextWrapper> 
-         {
-          ctgrName
-         }
-        </CtgrTextWrapper>
-      </CtgrWrapper>
+    <CtgrWrapper onClick={() => onClickSelect(ctgrName)}>
+      <CtgrTextWrapper>{ctgrName}</CtgrTextWrapper>
+    </CtgrWrapper>
   );
 };
 
 const CtgrWrapper = styled.div`
+  //버튼 초기화
+  background: inherit;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  overflow: visible;
+  cursor: pointer;
 
-display: flex;
+  display: flex;
   flex-direction: row;
   /* position: absolute; */
   width: 89px;
@@ -31,5 +50,4 @@ display: flex;
 
   color: #000000;
 `;
-const CtgrTextWrapper = styled.div`
-`;
+const CtgrTextWrapper = styled.div``;
