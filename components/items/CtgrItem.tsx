@@ -1,20 +1,30 @@
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
+type CtgrType = string;
 
-export const CtgrItm = ({ transCtgrVal, ctgrName }) => {
-  const [ctgrChoice, setCtgrChoice] = useState(null);
+export const CtgrItm = ({
+  transCtgrVal,
+  ctgrName,
+}: {
+  transCtgrVal: any;
+  ctgrName: CtgrType;
+}) => {
+  const [ctgrChoice, setCtgrChoice] = useState<CtgrType>("");
   const { push } = useRouter();
 
-  const onClickSelect = (ctgrName) => {
-    setCtgrChoice(ctgrName);
-    push({
-      query: {
-        ctgr: ctgrName,
-      },
-      pathname: `/`,
-    });
-  };
+  const onClickSelect = useCallback(
+    (ctgrName) => {
+      setCtgrChoice(ctgrName);
+      push({
+        query: {
+          ctgr: ctgrName,
+        },
+        pathname: `/`,
+      });
+    },
+    [ctgrChoice]
+  );
 
   useEffect(() => {
     transCtgrVal(ctgrChoice);

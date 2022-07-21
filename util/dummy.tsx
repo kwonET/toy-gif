@@ -1,4 +1,4 @@
-type CtgrType =
+export type CtgrType =
   | "억울"
   | "어이"
   | "억장"
@@ -41,7 +41,7 @@ interface PicType {
   title: string;
   imgUrl: string;
 }
-type PicsType = PicType[];
+export type PicsType = PicType[];
 //["억울","불만","화남","웃김","신남","설렘","놀림","어이","무시","한숨","슬픔","억장","정색","애교","놀람","대박","뜨헉"]
 export const dummyData: PicsType = [
   {

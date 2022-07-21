@@ -2,25 +2,30 @@ import styled from "styled-components";
 import { CtgrItm } from "./items/CtgrItem";
 import { LineItm } from "./items/LineItem";
 import { useState } from "react";
-export const Header = ({ cdata }) => {
-  const [ctgrValue, setCtgrValue]=useState();
+
+type CtgrType = string;
+export const Header = ({ cdata }: { cdata: CtgrType[] }) => {
+  const [ctgrValue, setCtgrValue] = useState<CtgrType>('');
 
   // console.log(ctgrValue);
   return (
     <HeaderWrapper>
       <CenterWrapper>
         <TitleWrapper>
-          <div className="text">
-          짤생성기
-          </div>
-          </TitleWrapper>
+          <div className="text">짤생성기</div>
+        </TitleWrapper>
         <LineItm></LineItm>
         <CtgrListWrapper>
           {cdata.map((item) => {
-            return <CtgrItm transCtgrVal={setCtgrValue} key={item.key} ctgrName={item} />;
+            return (
+              <CtgrItm
+                transCtgrVal={setCtgrValue}
+                key={item.key}
+                ctgrName={item}
+              />
+            );
           })}
         </CtgrListWrapper>
-        
       </CenterWrapper>
     </HeaderWrapper>
   );
@@ -48,9 +53,8 @@ const TitleWrapper = styled.div`
   line-height: 104px;
 
   color: #000000;
-  & > .text{
+  & > .text {
     display: flex;
-    
   }
 `;
 const CtgrListWrapper = styled.div`
@@ -65,7 +69,7 @@ const CenterWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  width:1394px;
+  width: 1394px;
   height: 200px;
   overflow: hidden;
 `;
