@@ -1,6 +1,6 @@
 // pages/index.tsx
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import { LineItm } from "../components/items/LineItem";
@@ -10,6 +10,7 @@ import { PicsType } from "../util/dummy";
 import html2canvas from "html2canvas";
 import htmlToImage from "html-to-image";
 import download from "downloadjs";
+import axios from "axios";
 
 type CtgrType = string;
 const Home = (pageProps) => {
@@ -18,6 +19,7 @@ const Home = (pageProps) => {
   const [ctgrValue, setCtgrValue] = useState<PicsType>(null);
   const [start, setStart] = useState<boolean>(null);
   const [num, setNum] = useState<number>(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const start = false;
@@ -33,20 +35,29 @@ const Home = (pageProps) => {
       setNum(random);
     }
   }, [id]);
-  // (3) 0 <= random <= 9
 
-  var dataUrl = "/";
-  var node = document.getElementById("my-gif");
-  const onClickSaveTo = async () => {
-    // 저장기능추가
-    // let url = "";
-    let canvas = await htmlToImage.toCanvas(node);
-    download(canvas.toDataURL("image/png"), "my-gif.png");
-    // await html2canvas(document.getElementById("my-gif")).then(
-    //   async (canvas) => {
-    //     url = await canvas.toDataURL("image/jpg").split(",")[1];
-    //   }
-    // );
+  const onClickSaveTo = () => {
+    const onCapture = () => {
+      console.log("onCapture");
+      html2canvas(document.querySelector("#my-gif")).then((canvas) => {
+        onSaveAs(canvas.toDataURL("image/png"), "image-download.png");
+      });
+    };
+    const onSaveAs = (url, filename) => {
+      console.log("onSaveAs");
+      var link = document.createElement("a");
+      if (typeof link.download === "string") {
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        window.open(url);
+      }
+    };
+
+    onCapture();
   };
 
   return (
@@ -54,14 +65,14 @@ const Home = (pageProps) => {
       <CenterWrapper>
         {/* <LineItm></LineItm> */}
         <ImgWrapper>
-          <div id="my-gif">
-            <GifWrapper>
+          <div>
+            <GifWrapper id="my-gif">
               {ctgrValue && <img src={`${ctgrValue[num].imgUrl}`} />}
-              <input type="text" />
+              <input type="text" ref={inputRef} />
             </GifWrapper>
           </div>
           <LineItm></LineItm>
-          <BtnWrapper onClick={() => onClickSaveTo}>저장하기</BtnWrapper>
+          <BtnWrapper onClick={() => onClickSaveTo()}>저장하기</BtnWrapper>
         </ImgWrapper>
       </CenterWrapper>
     </BodyWrapper>
@@ -138,12 +149,15 @@ const GifWrapper = styled.div`
   & > input {
     position: absolute;
     z-index: 10;
-    top: 62%;
-    left: 45%;
+    top: 650px;
+    /* top: 62%;
+    left: 45%; */
+    border: none;
     outline: none;
     background-color: none;
     padding-left: 10px;
-    font-size: 15px;
+    padding-top: 10px;
+    font-size: 24px;
   }
 `;
 
