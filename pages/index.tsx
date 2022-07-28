@@ -1,6 +1,12 @@
 // pages/index.tsx
 
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useLayoutEffect,
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import Head from "next/head";
 import styled from "styled-components";
 import { LineItm } from "../components/items/LineItem";
@@ -8,9 +14,6 @@ import { dummyData } from "../util/dummy";
 import { useRouter } from "next/router";
 import { PicsType } from "../util/dummy";
 import html2canvas from "html2canvas";
-import htmlToImage from "html-to-image";
-import download from "downloadjs";
-import axios from "axios";
 
 type CtgrType = string;
 const Home = (pageProps) => {
@@ -20,6 +23,9 @@ const Home = (pageProps) => {
   const [start, setStart] = useState<boolean>(null);
   const [num, setNum] = useState<number>(null);
   const inputRef = useRef(null);
+  const saveRef = useRef(null);
+  const [text, setText] = useState(null);
+  const [input, setInput] = useState(null);
 
   useEffect(() => {
     const start = false;
@@ -33,31 +39,41 @@ const Home = (pageProps) => {
       setCtgrValue(resultContainer);
       const random = Math.floor(Math.random() * resultContainer.length);
       setNum(random);
+      setText("");
     }
   }, [id]);
 
-  const onClickSaveTo = () => {
-    const onCapture = () => {
-      console.log("onCapture");
-      html2canvas(document.querySelector("#my-gif")).then((canvas) => {
-        onSaveAs(canvas.toDataURL("image/png"), "image-download.png");
-      });
-    };
-    const onSaveAs = (url, filename) => {
-      console.log("onSaveAs");
-      var link = document.createElement("a");
-      if (typeof link.download === "string") {
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        window.open(url);
-      }
-    };
+  const onClickSaveTo = async () => {
+    const element = saveRef.current;
+    const canvas = await html2canvas(element, {
+      backgroundColor: "none",
+      logging: true,
+      useCORS: true, //to enable cross origin perms
+    });
+    const data = canvas.toDataURL("image/jpg");
+    const link = document.createElement("a");
 
-    onCapture();
+    if (typeof link.download === "string") {
+      link.href = data;
+      console.log("");
+      link.download = "image.jpg";
+
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else {
+      window.open(data);
+    }
+  };
+
+  const onChange = (e) => {
+    let inputValue = e.target.value; //제대로 들어옴.
+    setText(inputValue);
+    document.getElementById("spanStrWidth").innerText = inputValue;
+
+    inputRef.current.style.width =
+      document.getElementById("spanStrWidth").offsetWidth+6+"px";
+      console.log(document.getElementById("spanStrWidth").offsetWidth);//inputRef.current.offsetWidth는 getter, style.width가 setter.
   };
 
   return (
@@ -65,10 +81,18 @@ const Home = (pageProps) => {
       <CenterWrapper>
         {/* <LineItm></LineItm> */}
         <ImgWrapper>
-          <div>
+          <div className="my-gif" ref={saveRef}>
             <GifWrapper id="my-gif">
+              {/* {ctgrValue && <img src={`${ctgrValue[num].imgUrl}`} />} */}
               {ctgrValue && <img src={`${ctgrValue[num].imgUrl}`} />}
-              <input type="text" ref={inputRef} />
+              <span id="spanStrWidth"></span>
+              <input
+                type="text"
+                value={text}
+                ref={inputRef}
+                onChange={onChange}
+                // width={inputValue}
+              />
             </GifWrapper>
           </div>
           <LineItm></LineItm>
@@ -104,36 +128,18 @@ const CenterWrapper = styled.div`
   flex-direction: row;
 `;
 
-// const BodyWrapper = styled.div`
-//   display: flex;
-//   top: 200px;
-// `;
-
-// const CenterWrapper = styled.div`
-//   width: 1200px;
-//   height: 650px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   text-align: center;
-//   flex-direction: column;
-// `;
-
 const ImgWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 1200px;
   height: 600px;
-  /* 
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  flex-direction: column; */
-`;
 
+  & > #my-gif {
+    width: 500px;
+    height: 600px;
+  }
+`;
 const GifWrapper = styled.div`
   display: flex;
   text-align: center;
@@ -146,6 +152,12 @@ const GifWrapper = styled.div`
   & > img {
     width: 90%;
   }
+  & > span {
+    visibility: hidden;
+    position: absolute;
+    top: -10000;
+    font-size: 18px;
+  }
   & > input {
     position: absolute;
     z-index: 10;
@@ -155,9 +167,11 @@ const GifWrapper = styled.div`
     border: none;
     outline: none;
     background-color: none;
-    padding-left: 10px;
-    padding-top: 10px;
-    font-size: 24px;
+    /* padding-left: 10px; */
+    font-size: 18px;
+    font-family: "DOSGothic";
+    text-align: center;
+    min-width: 50px;
   }
 `;
 

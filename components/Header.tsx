@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { CtgrItm } from "./items/CtgrItem";
 import { LineItm } from "./items/LineItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type CtgrType = string;
 export const Header = ({ cdata }: { cdata: CtgrType[] }) => {
